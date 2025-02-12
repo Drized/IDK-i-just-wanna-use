@@ -56,26 +56,12 @@ wait(0.4)
 getgenv().stopautotpmobloop = false
 end)
 
-ASection:NewButton("GodMode", "Activates GodMode", function()
-    local Remote = game:GetService("ReplicatedStorage"):FindFirstChild("DamageNew", true)
-    local Player = game:GetService("Players").LocalPlayer
-    local OldNameCall = nil
-OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-   local Args = {...}
-   local Self = Args[1]
-       if self == Remote and Args[1] == Player.Character then
-           return
-       end
-   return OldNameCall(self, unpack(Args))
-end)
-end)
-
 local Tp = true
 
 ASection:NewToggle("Auto OrbTP", "Teleports you to orbs automatically (portal relic)", function(State)
     Tp = State
 task.spawn(function()
-    while Tp and wait(0.1) do
+    while Tp and wait(0.001) do
 	local MyFol
         local CombatFolder = workspace:FindFirstChild("CombatFolder")
         if CombatFolder ~= nil and CombatFolder:FindFirstChild(Player.Name) then
@@ -126,12 +112,6 @@ game:GetService("ReplicatedStorage"):WaitForChild("Server"):FireServer(unpack(ar
 end
 end)
 
-ASection:NewButton("AntiAFK", "You will not get disconnected for idling", function()
-for i,v in pairs(getconnections(game:GetService("Players").LocalPlayer.Idled)) do
-   v:Disable()
-end
-end)
-
 local BTab = Window:NewTab("Fruits/Trees/Pickups")
 local BSection = BTab:NewSection("Fruits/Trees/Pickups")
 
@@ -140,71 +120,6 @@ local MaterialGivers = game:GetService("Workspace"):FindFirstChild("MaterialGive
 
 BSection:NewToggle("Gather Fruits", "Automatically gathers all fruits/trees", function(State)
     Mats = State
-spawn(function()
-while Mats and wait(0.1) do
-	local Player = game:GetService("Players").LocalPlayer
-           local Character = Player.Character or Player.CharacterAdded:Wait()
-           local HRP = Character:FindFirstChild("HumanoidRootPart")
-     if HRP then
-        for i,v in pairs(MaterialGivers) do
-            if v:IsA("BasePart") and v.Parent.Parent.Parent.Name == "MaterialGivers" then
-               firetouchinterest(HRP,v,0)
-               firetouchinterest(HRP,v,1)
-            end
-        end
-    end
-end
-end)
-end)
-
-BSection:NewButton("Teleport To A Blue Star", "Teleports you to a blue star if it exists", function()
-local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-local WorkspaceD = workspace:GetDescendants()
-   for i,v in next, WorkspaceD do 
-      if v.Parent.Name == "Models" and v.Name == "BlueStar" and v.Parent.Parent.Parent == workspace then
-         HRP.CFrame = v.CFrame
-      end
-   end
-end)
-
-BSection:NewButton("Teleport To A Star", "Teleports you to a star if it exists", function()
-local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-local WorkspaceD = workspace:GetDescendants()
-   for i,v in next, WorkspaceD do 
-      if v.Parent.Name == "Models" and v.Name == "Star" and v.Parent.Parent.Parent == workspace then
-         HRP.CFrame = v.CFrame
-      end
-   end
-end)
-
-BSection:NewButton("Teleport To Meteorite", "Teleports you to the meteorite", function()
-local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-if HRP then
-    HRP.CFrame = CFrame.new(-427, 232.5, -414)
-end
-end)
-
-BSection:NewButton("Teleport To A Graveshard Grave", "Teleports you to a Grave if it exists (Mining Pickaxe)", function()
-local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-local WorkspaceD = workspace:GetDescendants()
-   for i,v in next, WorkspaceD do 
-      if v.Name == "Hitbox" and v.Parent == workspace then
-         HRP.CFrame = v.CFrame
-      end
-   end
-end)
-
-
-BSection:NewButton("Teleport To A Dragonball", "Teleports you to a dragonball if it exists", function()
-local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-local WorkspaceD = workspace:GetDescendants()
-   for i,v in next, WorkspaceD do 
-      if v.Name == "Middle" and v.Parent.Parent == workspace and v.Parent.Name == "DragonBall" then
-         HRP.CFrame = v.CFrame
-      end
-   end
-end)
-
 BSection:NewButton("Teleport To A Lily", "Teleports you to a lily if it exists", function()
 local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
 local WorkspaceD = workspace:GetDescendants()
@@ -228,51 +143,6 @@ end)
 local CTab = Window:NewTab("Teleport")
 local CSection = CTab:NewSection("Teleport")
 
-local ArsenalTab = {}
-local Arsenals = workspace:WaitForChild("Arsenals"):GetDescendants()
-
-for i,v in pairs(Arsenals) do
-    if v:IsA("BasePart") and v.Parent.Parent.Name == "Arsenals" then
-        if not table.find(ArsenalTab,v.Parent.Name) then
-            table.insert(ArsenalTab,v.Parent.Name)
-        end
-    end
-end
-
-table.insert(ArsenalTab,"Void")
-table.insert(ArsenalTab,"Land Under The Waterfall")
-table.sort(ArsenalTab)
-
-CSection:NewDropdown("Teleport To Arsenal", "Teleports you to the selected arsenal", ArsenalTab, function(CurrentOption)
-    local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-    if CurrentOption == "Land Under The Waterfall" then
-        HRP.CFrame = CFrame.new(-19912,-110,-6258)
-    elseif CurrentOption == "Void" then
-        HRP.CFrame = CFrame.new(-19396,-73,-4085)
-    else
-        HRP.CFrame = workspace.Arsenals:FindFirstChild(CurrentOption):FindFirstChild("Base").CFrame
-    end
-end)
-
-local NPCs = {}
-table.insert(NPCs,"Smile (Hyper)")
-table.insert(NPCs,"Bottle of ??? (Hunter)")
-table.insert(NPCs,"Blind Grillby (Burning Head)")
-table.insert(NPCs,"Cursed Altar (Cursed)")
-table.insert(NPCs,"Gabriel (Ocean Glider)")
-table.insert(NPCs,"Green Light Green Light (Portal)")
-table.insert(NPCs,"Gears (Time Grinders)")
-table.insert(NPCs,"Mixed Letter (Ghoul)")
-table.insert(NPCs,"Holy Cross (Holy)")
-table.insert(NPCs,"Bottle (Gravity Boots)")
-table.insert(NPCs,"Ancient Paw (Pull)")
-table.insert(NPCs,"Noob (Torch)")
-table.insert(NPCs,"Broski (Bounty Hunter)")
-table.insert(NPCs,"Jeff (Berserk)")
-table.insert(NPCs,"Gem (Crystalized)")
-table.insert(NPCs,"Avatar of Radismus (Blood Wipe)")
-
-
 CSection:NewDropdown("Teleport To Chosen Relic NPC", "Teleports you to the chosen Relic NPC", NPCs, function(CurrentOption)
 local HRP = game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if CurrentOption == "Bottle of ??? (Hunter)" then HRP.CFrame = CFrame.new(-1040.1, 195.214, -4722.89)
@@ -293,44 +163,6 @@ local HRP = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Hum
     elseif CurrentOption == "Smile (Hyper)" then HRP.CFrame = CFrame.new(-1201, -123, 2573)
     end
 end)
-
-local NPCTable = {}
-local NPCFol = workspace.QuestNPCs:GetDescendants()
-table.insert(NPCTable,"Grani")
-table.insert(NPCTable,"King Blubb")
-
-for i,v in pairs(NPCFol) do
-if v.Name == "HumanoidRootPart" and v.Parent:IsA("Model") then
-if not table.find(NPCTable,v.Parent.Name) then
-table.insert(NPCTable,v.Parent.Name)
-end
-end
-end
-
-CSection:NewDropdown("Teleport To QuestNPC (Grani/Blubb too)", "Teleports you to the chosen Quest NPC", NPCTable, function(CurrentOption)
-local Player = game:GetService("Players").LocalPlayer 
-local Character = Player.Character or Player.CharacterAdded:Wait()
-HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-if HRP then
-	if CurrentOption == "Grani" then
-		HRP.CFrame = CFrame.new(6737.32, 144.011, 9794.26)
-	elseif CurrentOption == "King Blubb" then
-		HRP.CFrame = CFrame.new(-3723.83, 431.422, -5055.45)
-	else  HRP.CFrame = workspace.QuestNPCs:FindFirstChild(CurrentOption).HumanoidRootPart.CFrame
-	end
-end
-end)
-
-local StatuesFol = workspace.Statues:GetDescendants()
-local StatuesTable = {}
-
-for i,v in pairs(StatuesFol) do
-if v.Name == "ProximityPrompt" and v.Parent.Name == "Attachment" then
-if not table.find(StatuesTable,v.Parent.Parent.Parent.Name) then
-table.insert(StatuesTable,v.Parent.Parent.Parent.Name)
-end
-end
-end
 
 CSection:NewDropdown("Teleport To Class Statue", "Teleports you to the chosen Class Statue", StatuesTable, function(CurrentOption)
 local Player = game:GetService("Players").LocalPlayer 
@@ -372,67 +204,11 @@ HRP.CFrame = fairy.HumanoidRootPart.CFrame
 end
 end)
 
-local Players = game:GetService("Players"):GetChildren()
-local onJoinList = {}
-local updateList = {}
-
-local LocalPlayer = game:GetService("Players").LocalPlayer
-
-for i,v in pairs(Players) do
-    if not table.find(onJoinList,v.Name) and v.Name ~= LocalPlayer.Name then
-        table.insert(onJoinList,v.Name)
-    end
-end
-
-local dropdown = CSection:NewDropdown("Teleport To Player", "Teleports you to the player selected", onJoinList, function(CurrentOption)
-local HRP = Player.Character:FindFirstChild("HumanoidRootPart")
-local Players = game:GetService("Players"):GetChildren()
-   for i,v in next, Players do 
-      if v.Name == CurrentOption then
-         HRP.CFrame = v.Character:FindFirstChild("HumanoidRootPart").CFrame
-      end
-   end
-end)
-
-CSection:NewButton("Update Playerlist", "Refreshes Playerlist", function()
-local Players = game:GetService("Players"):GetChildren()
-for i,v in pairs(Players) do
-    if not table.find(updateList,tostring(v.Name)) and v.Name ~= LocalPlayer.Name then
-        table.insert(updateList,tostring(v.Name))
-    end
-end
-  dropdown:Refresh(updateList)
-end)
-
 local DTab = Window:NewTab("Other")
 local DSection = DTab:NewSection("Other")
 
 DSection:NewKeybind("Toggle UI Button", "Toggle UI Button", Enum.KeyCode.LeftControl, function()
 	Library:ToggleUI()
-end)
-
-DSection:NewButton("Infinite Combo ComboSword", "Infinite Combo on any tier of ComboSword", function()
-    -- Variable
-local Player = game.Players.LocalPlayer
-local De = game:GetService("Debris")
-
--- Function
-function InfCombo(Plr)
-    local head = Plr:WaitForChild("Head")
-    head.DescendantAdded:Connect(function(v)
-        if v:IsA("Script") then
-            De:AddItem(v,0.5)
-        end
-    end)
-end
-
--- Connect
-player.CharacterAdded:Connect(InfCombo)
-InfCombo(Player.Character)
-end)
-
-DSection:NewButton("InfiniteYield", "InfiniteYield", function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 end)
 
 DSection:NewButton("Open all Chests", "Opens all the chests", function()
@@ -444,75 +220,4 @@ firetouchinterest(HRP,v.Parent,0)
 firetouchinterest(HRP,v.Parent,1)
 end
 end
-end)
-
-local BlubbToggle = true
-
-DSection:NewToggle("Autobuy Blubb's Pizza", "Automatically buys blubb's pizza", function(State)
-BlubbToggle = State
-local args = {
-[1] = "Buy5", [2]=workspace:WaitForChild("Stalls"):WaitForChild("Initus Bay"):WaitForChild("Item Shop"):WaitForChild("Shop"):WaitForChild("Blubb Pizza")
-}
-spawn(function()
-while BlubbToggle and wait(0.1) do
-local Gold = game:GetService("Players").LocalPlayer:FindFirstChild("leaderstats"):FindFirstChild("Gold")
-if Gold.Value > 12500 then
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Effected"):FireServer(unpack(args))
-end
-end
-end)
-end)
-
-local FTab = Window:NewTab("Stats")
-local FSection = FTab:NewSection("Stats")
-
-
-FSection:NewButton("Auto Damage Stat", "Adds +1 to Damage repeatedly", function()
-spawn(function()
-while wait() do
-	local args = {[1]="Invest",[2]="Damage",[3]=1}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Server"):FireServer(unpack(args))
-end
-end)
-end)
-
-FSection:NewButton("Auto Health Stat", "Adds +1 to Health repeatedly", function()
-spawn(function()
-while wait() do
-	local args = {[1]="Invest",[2]="Health",[3]=1}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Server"):FireServer(unpack(args))
-end
-end)
-end)
-
-FSection:NewButton("Auto Magic Stat", "Adds +1 to Magic repeatedly", function()
-spawn(function()
-while wait() do
-	local args = {[1]="Invest",[2]="Magic",[3]=1}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Server"):FireServer(unpack(args))
-end
-end)
-end)
-
-FSection:NewButton("Auto Mana Stat", "Adds +1 to Mana repeatedly", function()
-spawn(function()
-while wait() do
-	local args = {[1]="Invest",[2]="Mana",[3]=1}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Server"):FireServer(unpack(args))
-end
-end)
-end)
-
-FSection:NewButton("Auto Shield Stat", "Adds +1 to Shield repeatedly", function()
-spawn(function()
-while wait() do
-	local args = {[1]="Invest",[2]="Shield",[3]=1}
-
-game:GetService("ReplicatedStorage"):WaitForChild("Server"):FireServer(unpack(args))
-end
-end) 
 end)
