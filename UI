@@ -1,5 +1,3 @@
---It copie from Idk his name but i cant open that code and that why i copie
---Am not create this !! Credit : Kavo
 local  = {}
 
 local tween = game:GetService("TweenService")
